@@ -27,7 +27,7 @@ LATIN_IME_SRC_DIR := src
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-align \
+LOCAL_CFLAGS += -Werror -Wall -Wextra -Wformat=2 -Wcast-qual -Wcast-align \
     -Wwrite-strings -Wfloat-equal -Wpointer-arith -Winit-self -Wredundant-decls -Wno-system-headers
 
 ifeq ($(TARGET_ARCH), arm)
@@ -121,8 +121,13 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
+ifdef NDK_ROOT
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := stlport_static
+LOCAL_CFLAGS += -Weffc++
+else
+LOCAL_C_INCLUDES += external/stlport/stlport bionic
+endif
 
 include $(BUILD_STATIC_LIBRARY)
 ######################################
@@ -144,9 +149,14 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
+ifdef NDK_ROOT
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := stlport_static
 LOCAL_LDFLAGS += -ldl
+else
+LOCAL_STATIC_LIBRARIES:= libstlport_static
+LOCAL_C_INCLUDES := external/stlport/stlport bionic
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 

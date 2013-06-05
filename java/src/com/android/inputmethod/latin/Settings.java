@@ -272,7 +272,10 @@ public final class Settings extends InputMethodSettingsFragment
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
-        (new BackupManager(getActivity())).dataChanged();
+        final Context context = getActivity();
+        if (context != null) {
+            (new BackupManager(context)).dataChanged();
+        }
         if (key.equals(PREF_POPUP_ON)) {
             setPreferenceEnabled(findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY),
                     prefs.getBoolean(PREF_POPUP_ON, true));
